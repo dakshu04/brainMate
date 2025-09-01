@@ -94,7 +94,9 @@ export default function UploadForm() {
       const { data = null, message = null } = result || {}
 
       if(data) {
-        toast("📄Saving PDF...")
+        setTimeout(() => {
+          toast("📄Saving PDF...")
+        }, 1000) 
         // if(data.summary) {
         //   //save the summary to the db
 
