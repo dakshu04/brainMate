@@ -58,7 +58,7 @@ export async function generatePdfSummary(
 
         return {
           success: true,
-          message: "Summary generated successfully",
+          message: "✅Summary generated successfully",
           data: { userId, fileName, pdfUrl, summary },
         };
       } catch (error: any) {
