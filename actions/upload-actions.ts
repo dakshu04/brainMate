@@ -1,9 +1,13 @@
 'use server'
 
+import { getDbConnection } from "@/lib/db"
 import { generatePdfSummaryFromGemini } from "@/lib/geminiai"
 import { fetchAndExtractPdfText } from "@/lib/langchain"
 import { generateSummaryFromOpenAI } from "@/lib/openai"
-import { summary } from "motion/react-client"
+import { formatFileNameAsTitle } from "@/utils/format-utils"
+import { auth } from "@clerk/nextjs/server"
+import { revalidatePath } from "next/cache"
+
 
 // Shape returned by UploadThing `startUpload`
 export type UploadThingResponse = {
@@ -42,10 +46,12 @@ export async function generatePdfSummary(
         return { success: false, message: "Failed to generate summary", data: null }
       }
 
+      const formattedFileName = formatFileNameAsTitle(fileName)
+
       return {
         success: true,
         message: "Summary generated successfully",
-        data: { userId, fileName, pdfUrl, summary },
+        data: { title: formattedFileName,  summary },
       }
     } catch (err: unknown) {
       // Give a helpful error message back to the client
@@ -81,4 +87,101 @@ export async function generatePdfSummary(
     console.error("Error extracting PDF text:", error)
     return { success: false, message: "File processing failed", data: null }
   }
+}
+
+
+async function savePdfSummary({userId, fileUrl, summary, title,fileName}: {
+  userId?: string,
+  fileUrl: string,
+  summary: string,
+  title: string,
+  fileName: string
+}) {
+  // sql inserting pdf summary
+  try {
+    const sql = await getDbConnection()
+    await sql`INSERT INTO pdf_summaries(
+      user_id, 
+      original_file_url,
+      summary_text,
+      title,
+      file_name
+    )
+    VALUES (
+      ${userId},
+      ${fileUrl},
+      ${summary},
+      ${title},
+      ${fileName} 
+    )`
+  } catch (error) {
+    console.log('Error saving PDF summary', error)
+    throw error
+  }
+}
+
+interface PdfSummaryType {
+  userId?: string,
+  fileUrl: string,
+  summary: string,
+  title: string,
+  fileName: string,
+}
+
+export async function storePdfSummaryAction({
+      fileUrl,
+      summary,
+      title,
+      fileName,
+}: PdfSummaryType) {
+  // user is logged in and has a userId
+  // savePdfSummary()
+  // savePdfSummary()
+  
+  let savedSummary: any;
+
+  try {
+    const { userId } = await auth()
+
+    if(!userId) {
+      return {
+      success: false,
+      message: 'User not found'
+    }
+    }
+
+    savedSummary = await savePdfSummary({
+      userId,
+      fileUrl,
+      summary,
+      title,
+      fileName
+    })
+
+    if(!savedSummary) {
+      
+      return {
+        success: false,
+        message: 'Failed to save summary, please try again...'
+      }
+    }
+    console.log("📝 Storing summary:", { userId, fileUrl, summary, title, fileName })
+    
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message: 'Error saving PDF summary'
+    }
+  }
+
+  //Revalidate our cache --??
+  revalidatePath(`/summaries/${savedSummary.id}`)
+
+  return {
+      success: true,
+      message: "PDF summary saved successfully",
+      data: {
+        id: savedSummary.id
+      }
+    }
 }
