@@ -9,7 +9,7 @@ export default function Page() {
       <BgGradient />
 
       {/* Content Wrapper */}
-      <div className="flex flex-col items-center justify-center mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+      <div className="flex flex-col items-center justify-center mx-auto max-w-7xl px-6 py-4 sm:py-32 lg:px-8">
         <UploadHeaderPage />
         <UploadFormPage />
       </div>
