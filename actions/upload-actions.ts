@@ -57,7 +57,7 @@ export async function generatePdfSummary(
       // Give a helpful error message back to the client
       if (err instanceof Error && err.message === "RATE_LIMIT_EXCEEDED") {
         try {
-  const summary = await generatePdfSummaryFromGemini(pdfText);
+        const summary = await generatePdfSummaryFromGemini(pdfText);
         if (!summary) {
           return { success: false, message: "Gemini returned no summary", data: null };
         }
