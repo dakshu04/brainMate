@@ -1,31 +1,8 @@
 "use client";
+import { pricingPlans } from "@/lib/constant";
 import React from "react";
 
-const plans = [
-  {
-    id: "basic",
-    name: "Basic",
-    price: 9,
-    description: "Great for individuals starting out",
-    items: ["5 PDF summaries per month", "Standard processing"],
-    paymentLink: "https://buy.stripe.com/test_basic_plan", // Replace with real link
-    priceId: "price_basic_plan", // Stripe price id
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: 19,
-    description: "For professionals and teams",
-    items: [
-      "Unlimited PDF summaries",
-      "Priority processing",
-      "24/7 priority support",
-      "Markdown Export",
-    ],
-    paymentLink: "https://buy.stripe.com/test_pro_plan", // Replace with real link
-    priceId: "price_pro_plan",
-  },
-];
+
 
 const PricingCard = ({
   name,
@@ -71,7 +48,7 @@ export default function PricingSection() {
 
       {/* Pricing cards grid */}
       <div className="relative flex justify-center flex-col lg:flex-row items-center lg:items-stretch gap-8">
-        {plans.map((plan) => (
+        {pricingPlans.map((plan) => (
           <PricingCard key={plan.id} {...plan} />
         ))}
       </div>
