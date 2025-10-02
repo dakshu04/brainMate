@@ -4,16 +4,22 @@ import "./globals.css";
 import Header from "@/components/common/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
+import { ORIGIN_URL } from "@/utils/helper";
+import Script from "next/script"; // ✅ import Script
 
 const fontSans = FontSans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ['200', '300', '400', '500', '600', '700', '800', '900']
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
   title: "BrainMate",
   description: "Your AI-powered companion for smarter learning & work.",
+  metadataBase: new URL(ORIGIN_URL),
+  alternates: {
+    canonical: ORIGIN_URL,
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +30,14 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
+        <head>
+          {/* ✅ Google AdSense script (correct way in Next.js) */}
+          <Script
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
+            strategy="afterInteractive"
+            crossOrigin="anonymous"
+          />
+        </head>
         <body className={`${fontSans.variable} font-sans antialiased`}>
           <div className="relative flex min-h-screen flex-col">
             <Header />
