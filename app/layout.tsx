@@ -31,6 +31,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <head>
+          <meta
+            name="google-adsense-account"
+            content="ca-pub-6044278578685946"
+          />
           {/* ✅ Google AdSense script (correct way in Next.js) */}
           <Script
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
