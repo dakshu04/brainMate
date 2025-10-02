@@ -36,13 +36,13 @@ export default function RootLayout({
             content="ca-pub-6044278578685946"
           />
           {/* ✅ Google AdSense script (correct way in Next.js) */}
+        </head>
+        <body className={`${fontSans.variable} font-sans antialiased`}>
           <Script
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
             strategy="afterInteractive"
             crossOrigin="anonymous"
           />
-        </head>
-        <body className={`${fontSans.variable} font-sans antialiased`}>
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">{children}</main>
